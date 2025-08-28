@@ -2,7 +2,6 @@ package com.rsarabia.jtodolistappback.controllers;
 
 import com.rsarabia.jtodolistappback.entities.Task;
 import com.rsarabia.jtodolistappback.services.TaskService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +15,6 @@ public class TaskController {
 
     private final TaskService taskService;
 
-    @Autowired
     public TaskController(TaskService taskService) {
         this.taskService = taskService;
     }
@@ -28,5 +26,17 @@ public class TaskController {
             URI location = URI.create(String.format("/api/tasks/%d", savedTask.getId()));
             return ResponseEntity.created(location).body(savedTask);
         });
+    }
+
+    @Async
+    @GetMapping("/{id}")
+    public CompletableFuture<ResponseEntity<Task>> getTaskById(@PathVariable Long id) {
+        return taskService.getTaskById(id).thenApply(ResponseEntity::ok);
+    }
+
+    @Async
+    @GetMapping
+    public CompletableFuture<ResponseEntity<Iterable<Task>>> getTasks() {
+        return taskService.getTasks().thenApply(ResponseEntity::ok);
     }
 }
