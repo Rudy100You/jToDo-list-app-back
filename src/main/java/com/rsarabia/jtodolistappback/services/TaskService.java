@@ -59,4 +59,9 @@ public class TaskService {
             return taskRepository.save(existingTask);
         });
     }
+
+    @Async
+    public CompletableFuture<Void> deleteTask(Long id) {
+        return this.getTaskById(id).thenAccept(taskRepository::delete);
+    }
 }
