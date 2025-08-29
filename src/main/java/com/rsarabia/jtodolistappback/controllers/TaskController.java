@@ -69,4 +69,11 @@ public class TaskController {
                 .thenApply(taskMapper::toDto)
                 .thenApply(ResponseEntity::ok);
     }
+
+    @Async
+    @DeleteMapping("/{id}")
+    public CompletableFuture<ResponseEntity<Void>> deleteTask(@PathVariable Long id) {
+        return taskService.deleteTask(id)
+                .thenApply(unused -> ResponseEntity.noContent().build());
+    }
 }
